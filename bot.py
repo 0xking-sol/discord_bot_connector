@@ -1,6 +1,7 @@
 import discord
 import random
 import responses
+import CEXs
 
 
 async def send_message(message, user_message, is_private):
@@ -15,7 +16,7 @@ async def send_message(message, user_message, is_private):
 
 
 def run_discord_bot():
-    TOKEN = #INSERT TOKEN HERE INSIDE ''
+    TOKEN = 'MTA3Mjg5NTQwMTE2Mzc3MTk3Ng.GZ7fyG.aduVf2J1YVIwn9OXotfzp7uPjx1C2A6fOt3t3g'
     intents = discord.Intents.default()
     intents.message_content = True
     client = discord.Client(intents=intents)
@@ -41,18 +42,28 @@ def run_discord_bot():
             embed.description = embed.description.lower()
             if "twap" in embed.title:
                 if "buying" in embed.description:
-                    await message.channel.send('twap buy activated, opening a long')
+                    #if currency in embed.title:
+                    await message.channel.send('twap buy activated, opening a long on ' + currency)
                 if "selling" in embed.description:
-                    await message.channel.send('twap sell activated, opening a short')
+                    #if currency in embed.title:
+                    await message.channel.send('twap sell activated, opening a short on ' + currency)
 
             if "market sell" in embed.title:
-                await message.channel.send('market sold, opening a long')
+                if currency in embed.title:
+                    await message.channel.send('market sold, opening a long on ' + currency)
 
             if "market buy" in embed.title:
-                await message.channel.send('market bought, opening a short')
+                if currency in embed.title:
+                    await message.channel.send('market bought, opening a short on ' + currency)
 
             if "test notification" in embed.title:
                 await message.channel.send('test doubly approved')
+
+            # this won't work until i split the dictionary into a string - maybe it will work now?
+            #for currency in currencies:
+            #currency = str(currency)
+             #   if currency in embed.title:
+              #      await message.channel.send('relevant currency is ' + currency)
 
         if user_message[0] not in range:
             return
