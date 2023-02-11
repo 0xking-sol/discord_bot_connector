@@ -7,6 +7,9 @@ import ccxt
 read_binance_key = '<your key here>'
 read_binance_secret = '<your secret here>'
 
+# binance testnet documentation: https://www.binance.com/en/support/faq/how-to-test-my-functions-on-binance-testnet-ab78f9a1b8824cf0a106b4229c76496d
+# need to use github and then use new API endpoint, maybe better to use CCXT guide on testnet
+
 # from variable id
 exchange_id = 'binance'
 binance = ccxt.binance()
