@@ -1,7 +1,8 @@
 import discord
 import random
 import responses
-from CEXs import currency_list
+import ccxt
+from CEXs import currency_list, symbols, binance
 
 
 async def send_message(message, user_message, is_private):
@@ -36,28 +37,38 @@ def run_discord_bot():
         if len(message.embeds) == 1:
             embed = message.embeds[0]
             embed.title = embed.title.lower()
-            embed.description = embed.description.lower()
-            message_currency = embed.title.split(" on ")[-1].split("\n")[0]
-            message_currency = message_currency.upper()
+            message_description = embed.description.lower()
+            message_currency_pair = ''
             print(f'{username} said: "{embed.title}" ({channel})')
 
-            if message_currency in currency_list:
-                index = currency_list.index(message_currency)
+            # use the symbol trading pair (FLOW/BUSD) that is in the embed
+            # and take this, and use it to search through symbols
+            # it can then easily be used to get the price with ticker method
+            for word in message_description.split():
+                if '/' in word:
+                    message_currency_pair = word.strip()
+                    message_currency_pair = message_currency_pair.upper()
+                    print(message_currency_pair)
+                    break
+
+            if message_currency_pair is not None and message_currency_pair in symbols:
+                ticker = binance.fetch_ticker(message_currency_pair)
+                print(ticker)
+                price = str(ticker['last'])
             else:
-                index = 0
-                currency_list[index] = '- coin not on binance'
+                price = ''
 
             if "twap" in embed.title:
                 if "buying" in embed.description:
-                    await message.channel.send('twap buy activated, opening a long on ' + currency_list[index])
+                    await message.channel.send('twap buy activated, opening a long on ' + message_currency_pair + ". Current Price is " + price)
                 if "selling" in embed.description:
-                    await message.channel.send('twap sell activated, opening a short on ' + currency_list[index])
+                    await message.channel.send('twap sell activated, opening a short on ' + message_currency_pair + ". Current Price is " + price)
 
             if "market sell" in embed.title:
-                await message.channel.send('market sold, opening a long on ' + currency_list[index])
+                await message.channel.send('market sold, opening a long on ' + message_currency_pair + ". Current Price is " + price)
 
             if "market buy" in embed.title:
-                await message.channel.send('market bought, opening a short on ' + currency_list[index])
+                await message.channel.send('market bought, opening a short on ' + message_currency_pair + ". Current Price is " + price)
 
             if "test notification" in embed.title:
                 await message.channel.send('test doubly approved')
