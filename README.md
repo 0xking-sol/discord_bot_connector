@@ -9,7 +9,7 @@ Bot can be edited to choose responses, and is also capable of responding to priv
 
 Currently building out compability with Binance API using the python-binance package. 
 Bot is able to call last price (and other parameters) from any currency pair on binance. The next upgrade is to add market orders. 
-This requires providing access to the API above and beyond read-only
+This requires providing access to the API above and beyond read-only. Easy to expand other APIs now too from other exchanges
 
 Example of Bot responding to an embedded message is below. 
 
